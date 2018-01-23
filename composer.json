@@ -1,7 +1,7 @@
 {
     "name": "ancarda/types",
     "description": "Type classes with built-in validation logic",
-	"keywords": [],
+    "keywords": [],
     "type": "library",
     "license": "MIT",
     "authors": [
