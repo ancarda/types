@@ -10,6 +10,9 @@ use \JsonSerializable;
 
 /**
  * Represents a Legacy (IPv4) IP Address.
+ *
+ * @author  Mark Dain <mark@markdain.net>
+ * @license https://choosealicense.com/licenses/mit/ (MIT License)
  */
 class LegacyIPAddress implements JsonSerializable
 {
