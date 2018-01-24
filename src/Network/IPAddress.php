@@ -130,6 +130,26 @@ class IPAddress
     }
 
     /**
+     * Returns the Fully Qualified Domain Name (FQDN) for this IP address'
+     * Reverse DNS entry, suitable to be given to a DNS resolver to look up the
+     * PTR value associated.
+     *
+     * This function reverses the IP address to match DNS' hierarchical nature
+     * and adds ip6.arpa. on the end. The string ends in a period.
+     *
+     * @return string ...0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa.
+     */
+    public function reverseDNS(): string
+    {
+        $out = '';
+        for ($i = 15; $i >= 0; $i--) {
+            $s = strrev(dechex($this->ip[$i]->value()));
+            $out .= $s[0] . '.' . (isset($s[1]) ? $s[1] : '0') . '.';
+        }
+        return $out . 'ip6.arpa.';
+    }
+
+    /**
      * Determines if this IP address is used as the Loopback Address, as
      * defined in RFC4291, Section 2.5.3. Traffic sent to this address does not
      * leave the source machine.
