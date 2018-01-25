@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Ancarda\Type;
+namespace Ancarda\Type\Math;
 
 use \DomainException;
 use \JsonSerializable;
@@ -13,7 +13,7 @@ use \JsonSerializable;
  * @author  Mark Dain <mark@markdain.net>
  * @license https://choosealicense.com/licenses/mit/ (MIT License)
  */
-class Byte implements JsonSerializable
+class UInt8 implements JsonSerializable
 {
     /**
      * @var int
@@ -29,10 +29,10 @@ class Byte implements JsonSerializable
     public function __construct(int $value)
     {
         if ($value < 0x00) {
-            throw new DomainException('Byte cannot be lower than 0 (0x00)');
+            throw new DomainException('UInt8 cannot be lower than 0 (0x00)');
         }
         if ($value > 0xFF) {
-            throw new DomainException('Byte cannot exceed 255 (0xFF)');
+            throw new DomainException('UInt8 cannot exceed 255 (0xFF)');
         }
 
         $this->value = $value;
@@ -51,7 +51,7 @@ class Byte implements JsonSerializable
     /**
      * Returns the underlying value, which is stored as an integer.
      *
-     * This function has to return a string so if a Byte is coerced into a
+     * This function has to return a string so if a UInt8 is coerced into a
      * string, either via `(string) $byte` or by its use where a string is
      * expected, such as concatenation, this will function will be silently
      * called to make this happen.

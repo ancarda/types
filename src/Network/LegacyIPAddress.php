@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Ancarda\Type\Network;
 
-use \Ancarda\Type\Byte;
+use \Ancarda\Type\Math\UInt8;
 use \DomainException;
 use \JsonSerializable;
 
@@ -17,22 +17,22 @@ use \JsonSerializable;
 class LegacyIPAddress implements JsonSerializable
 {
     /**
-     * @var Byte
+     * @var UInt8
      */
     protected $a = null;
 
     /**
-     * @var Byte
+     * @var UInt8
      */
     protected $b = null;
 
     /**
-     * @var Byte
+     * @var UInt8
      */
     protected $c = null;
 
     /**
-     * @var Byte
+     * @var UInt8
      */
     protected $d = null;
 
@@ -49,10 +49,10 @@ class LegacyIPAddress implements JsonSerializable
 
         list($a, $b, $c, $d) = explode('.', $ip);
 
-        $this->a = new Byte((int) $a);
-        $this->b = new Byte((int) $b);
-        $this->c = new Byte((int) $c);
-        $this->d = new Byte((int) $d);
+        $this->a = new UInt8((int) $a);
+        $this->b = new UInt8((int) $b);
+        $this->c = new UInt8((int) $c);
+        $this->d = new UInt8((int) $d);
     }
 
     /**

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Ancarda\Type\Network;
 
-use \Ancarda\Type\Byte;
+use \Ancarda\Type\Math\UInt8;
 use \DomainException;
 
 /**
@@ -16,7 +16,7 @@ use \DomainException;
 class IPAddress
 {
     /**
-     * @var array Array of Byte
+     * @var array Array of UInt8
      */
     protected $ip = [];
 
@@ -55,8 +55,8 @@ class IPAddress
         }, explode(':', $ip));
 
         foreach ($blocks as $b) {
-            $this->ip[] = new Byte(hexdec($b[0] . $b[1]));
-            $this->ip[] = new Byte(hexdec($b[2] . $b[3]));
+            $this->ip[] = new UInt8(hexdec($b[0] . $b[1]));
+            $this->ip[] = new UInt8(hexdec($b[2] . $b[3]));
         }
     }
 
