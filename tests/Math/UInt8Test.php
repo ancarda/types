@@ -23,12 +23,12 @@ final class UInt8Test extends TestCase
     public function testRejectHighValues()
     {
         $this->expectException(DomainException::class);
-        $b = new UInt8(random_int(256, 65535));
+        new UInt8(random_int(256, 65535));
     }
 
     public function testRejectLowValues()
     {
         $this->expectException(DomainException::class);
-        $b = new UInt8(random_int(-65535, -1));
+        new UInt8(random_int(-65535, -1));
     }
 }

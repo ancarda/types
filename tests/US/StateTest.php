@@ -36,6 +36,6 @@ final class StateTest extends TestCase
     public function testRejectInvalidStates()
     {
         $this->expectException(DomainException::class);
-        $xx = new State('XX');
+        new State('XX');
     }
 }
