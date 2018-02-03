@@ -18,7 +18,11 @@ These classes can be used with any framework and have no dependencies other than
 
 Types can then be initalized, like so:
 
-	use \Ancarda\Type\Byte;
-	$b = new Byte(102);
-	// $b can now be passed to a function that accepts Byte.
-	// Consumer doesn't need to check $b is 0 to 255.
+```php
+<?php
+
+use \Ancarda\Type\Math\UInt8;
+$b = new UInt8(102);
+// $b can now be passed to a function that accepts UInt8.
+// Consumer doesn't need to check $b is 0 to 255.
+```
