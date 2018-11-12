@@ -13,29 +13,34 @@ final class StateTest extends TestCase
     public function testFromCode()
     {
         $tx = new State('tx');
-        $this->assertEquals($tx->code(), 'TX');
-        $this->assertEquals($tx->name(), 'Texas');
-        $this->assertEquals((string) $tx, 'Texas (TX)');
-        $this->assertEquals(json_encode($tx), '{"code":"TX","name":"Texas"}');
+        $this->assertEquals('TX', $tx->code());
+        $this->assertEquals('Texas', $tx->name());
+        $this->assertEquals('Texas (TX)', (string) $tx);
+        $this->assertEquals('{"code":"TX","name":"Texas"}', json_encode($tx));
     }
 
-    public function testFromName()
+    public function fromNameProvider()
     {
-        $ak = new State('ARKANSAS');
-        $this->assertEquals($ak->code(), 'AR');
+        return [
+            ['ARKANSAS', 'AR'],
+            ['aLAbaMa', 'AL'],
+            [" \tGA\n", 'GA'],
+        ];
+    }
 
-        // Test that it works with lowercase and inconsistent case
-        $al = new State('aLAbaMa');
-        $this->assertEquals($al->code(), 'AL');
-
-        // Test trim
-        $ga = new State(" \tGA\n");
-        $this->assertEquals($ga->code(), 'GA');
+    /**
+     * @dataProvider fromNameProvider
+     */
+    public function testFromName($codeName, $expected)
+    {
+        $ak = new State($codeName);
+        $this->assertEquals($expected, $ak->code());
     }
 
     public function testRejectInvalidStates()
     {
         $this->expectException(DomainException::class);
+        $this->expectExceptionMessage('XX');
         new State('XX');
     }
 }
