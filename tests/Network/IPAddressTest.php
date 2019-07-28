@@ -13,56 +13,72 @@ final class IPAddressTest extends TestCase
     public function testBasic()
     {
         $ip = new IPAddress('abcd:ef01:2345:6789:abcd:ef01:2345:6789');
-        $this->assertEquals($ip->expanded(), 'abcd:ef01:2345:6789:abcd:ef01:2345:6789');
+        $this->assertEquals('abcd:ef01:2345:6789:abcd:ef01:2345:6789', $ip->expanded());
     }
 
     public function testWillLeftPad()
     {
         $ip = new IPAddress('a:b:c:d:ee:ff:111:2222');
-        $this->assertEquals($ip->expanded(), '000a:000b:000c:000d:00ee:00ff:0111:2222');
+        $this->assertEquals('000a:000b:000c:000d:00ee:00ff:0111:2222', $ip->expanded());
     }
 
     public function testWillExpandZeros()
     {
         $ip = new IPAddress('2001:db8::1');
-        $this->assertEquals($ip->expanded(), '2001:0db8:0000:0000:0000:0000:0000:0001');
+        $this->assertEquals('2001:0db8:0000:0000:0000:0000:0000:0001', $ip->expanded());
     }
 
     public function testRejectMultipleColons()
     {
         $this->expectException(DomainException::class);
+        $this->expectExceptionMessage('An IPv6 address can only have 1 group of collapsed zeros (::).');
         new IPAddress('2001:db8::1::1');
     }
 
     public function testRejectGarbage()
     {
         $this->expectException(DomainException::class);
+        $this->expectExceptionMessage('Input does not look like an IPv6 address.');
         new IPAddress(bin2hex(random_bytes(8)));
     }
 
-    public function testMinifyAddress()
+    public function minifyAddressProvider()
     {
-        $ip = new IPAddress('2001:0db8:0001:0002:0003:0004:0005:0006');
-        $this->assertEquals($ip->minified(), '2001:db8:1:2:3:4:5:6');
-        $this->assertEquals($ip->value(), '2001:db8:1:2:3:4:5:6');
-
-        $ip2 = new IPAddress('2001:0db8:0101:0234:ff03:9904:0005:0006');
-        $this->assertEquals($ip2->value(), '2001:db8:101:234:ff03:9904:5:6');
+        return [
+            ['2001:0db8:0001:0002:0003:0004:0005:0006', '2001:db8:1:2:3:4:5:6'],
+            ['2001:0db8:0101:0234:ff03:9904:0005:0006', '2001:db8:101:234:ff03:9904:5:6'],
+        ];
     }
 
-    public function testMinifyAddressWithCollapsedZeros()
+    /**
+     * @dataProvider minifyAddressProvider
+     */
+    public function testMinifyAddress($ipAddress, $expected)
     {
-        $ip = new IPAddress('2001:db8:0:0:0:0:0:1');
-        $ip2 = new IPAddress('::1');
-        $ip3 = new IPAddress('::1:2:3:4');
-        $ip4 = new IPAddress('::');
-        $ip5 = new IPAddress('1:2:3:4::');
+        $ip = new IPAddress($ipAddress);
+        $this->assertEquals($expected, $ip->minified());
+    }
 
-        $this->assertEquals($ip->minified(), '2001:db8::1');
-        $this->assertEquals($ip2->minified(), '::1');
-        $this->assertEquals($ip3->minified(), '::1:2:3:4');
-        $this->assertEquals($ip4->minified(), '::');
-        $this->assertEquals($ip5->minified(), '1:2:3:4::');
+    public function minifyAddressWithCollapsedZerosProvider()
+    {
+        return [
+            ['2001:db8:0:0:0:0:0:1', '2001:db8::1'],
+            ['::1', '::1'],
+            ['::1:2:3:4', '::1:2:3:4'],
+            ['::', '::'],
+            ['1:2:3:4::', '1:2:3:4::'],
+        ];
+    }
+
+    /**
+     * @dataProvider minifyAddressWithCollapsedZerosProvider
+     */
+    public function testMinifyAddressWithCollapsedZeros($ipAddress, $expected)
+    {
+        $ip = new IPAddress($ipAddress);
+
+        $this->assertEquals($expected, $ip->minified());
+        $this->assertEquals($expected, $ip->value());
     }
 
     public function testIsLoopback()
